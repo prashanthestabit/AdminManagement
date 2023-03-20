@@ -1,0 +1,11 @@
+{
+    "name": "AdminManagement",
+    "alias": "adminmanagement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\AdminManagement\\Providers\\AdminManagementServiceProvider"
+    ],
+    "files": []
+}
