@@ -42,6 +42,12 @@ php artisan module:enable AdminManagement
 php artisan vendor:publish --tag=public --provider="Modules\AdminManagement\Providers\AdminManagementServiceProvider"
 ```
 
+### Run Seed
+
+```bash
+php artisan module:seed AdminManagement
+```
+
 ### Usage
 Once the module is installed and set up, you can access the admin management features by navigating to the appropriate URLs:
 
