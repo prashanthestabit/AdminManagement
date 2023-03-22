@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\AdminManagement\Http\Controllers\AdminManagementController;
 use Modules\AdminManagement\Http\Controllers\Auth\AuthController;
 use Modules\AdminManagement\Http\Controllers\Auth\ChangePasswordController;
+use Modules\AdminManagement\Http\Controllers\Auth\ProfileController;
 use Modules\AdminManagement\Http\Controllers\Auth\ResetPasswordController;
 use Modules\AdminManagement\Http\Controllers\PermissionController;
 use Modules\AdminManagement\Http\Controllers\RoleController;
@@ -35,7 +36,11 @@ Route::prefix('adminmanagement')->group(function() {
 });
 
 Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
+
     Route::get('dashboard', [AdminManagementController::class ,'index'])->name('dashboard');
+
+    Route::get('home', [AdminManagementController::class ,'index'])->name('home');
+
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::resource('users', UserController::class);
@@ -47,6 +52,8 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => ['auth']], function () {
 // Change password
+        Route::get('show', [ProfileController::class,'index'])->name('show');
+        Route::post('update', [ProfileController::class,'update'])->name('update');
         Route::get('password', [ChangePasswordController::class,'index'])->name('password.edit');
         Route::post('password/update', [ChangePasswordController::class,'updatePassword'])->name('password.update');
 });
