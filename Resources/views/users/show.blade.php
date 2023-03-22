@@ -27,9 +27,13 @@
 
                             <div class="form-group">
                                 <label for="role">Role :  {{ implode(',',$userRole) }} </label>
-
-
                             </div>
+
+                            @if($userPermission)
+                            <div class="form-group">
+                                <label for="role">Permission :  {{ implode(', ',$userPermission) }} </label>
+                            </div>
+                            @endif
 
                         </div>
                     </div>

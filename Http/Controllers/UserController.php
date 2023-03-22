@@ -6,7 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 use Exception;
 use Gate;
 use Illuminate\Http\Response;
@@ -102,7 +102,10 @@ class UserController extends Controller
         try {
             $user = (new AuthRepository())->find($id);
             $userRole = $user->roles->pluck('name')->all();
-            return view('adminmanagement::users.show', compact('user', 'userRole'));
+            $userPermission = $user->permissions->pluck('name')->map(function ($name) {
+                return Str::title($name);
+            })->all();
+            return view('adminmanagement::users.show', compact('user', 'userRole', 'userPermission'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
