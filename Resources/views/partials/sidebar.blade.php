@@ -27,23 +27,28 @@
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                  with font-awesome or any other icon font library -->
-            <li class="nav-item menu-open">
-              <a href="#" class="nav-link active">
+            <li class="nav-item
+            {{ request()->is("dashboard") || request()->is("dashboard/*") ? "menu-open" : "" }}">
+              <a href="{{ route('admin.dashboard') }}" class="nav-link
+              {{ request()->is("dashboard") || request()->is("dashboard/*") ? "active" : "" }}">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
-                  Dashboard
+                    @lang('adminmanagement::auth.dashboard')
                 </p>
               </a>
-              <li class="nav-item">
-                <a href="{{ route('profile.password.edit') }}" class="nav-link">
+              <li class="nav-item
+              {{ request()->is("profile/password") || request()->is("profile/password/*") ? "menu-open" : "" }}">
+                <a href="{{ route('profile.password.edit') }}" class="nav-link
+                {{ request()->is("profile/password") || request()->is("profile/password/*") ? "active" : "" }}">
                   <i class="nav-icon fas fa-lock"></i>
                   <p>
                       @lang('adminmanagement::auth.change_password')
                   </p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
+              @can('access user')
+              <li class="nav-item {{ request()->is("users") || request()->is("users/*") ? "menu-open" : "" }}">
+                <a href="#" class="nav-link {{ request()->is("users") || request()->is("users/*") ? "active" : "" }}">
                   <i class="nav-icon fas fa-user"></i>
                   <p>
                     User Management
@@ -53,7 +58,8 @@
                 <ul class="nav nav-treeview">
                 @can('access user')
                   <li class="nav-item">
-                    <a href="{{ route('admin.users.index') }}" class="nav-link">
+                    <a href="{{ route('admin.users.index') }}" class="nav-link
+                    {{ request()->is("users") ? "active" : "" }}">
                       <i class="far fa-circle nav-icon"></i>
                       <p>List</p>
                     </a>
@@ -61,13 +67,81 @@
                   @endcan
                   @can('create user')
                   <li class="nav-item">
-                    <a href="{{ route('admin.users.create') }}" class="nav-link">
+                    <a href="{{ route('admin.users.create') }}" class="nav-link
+                    {{ request()->is("users/create") || request()->is("users/*") ? "active" : "" }}">
                       <i class="far fa-circle nav-icon"></i>
                       <p>Create</p>
                     </a>
                   </li>
                   @endcan
                 </ul>
+                @endcan
+                @can('access role')
+                <li class="nav-item {{ request()->is("roles") || request()->is("roles/*") ? "menu-open" : "" }}">
+                    <a href="#" class="nav-link
+                    {{ request()->is("roles") || request()->is("roles/*") ? "active" : "" }}">
+                      <i class="nav-icon fas fa-cogs"></i>
+                      <p>
+                        Roles
+                        <i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                    @can('access role')
+                      <li class="nav-item">
+                        <a href="{{ route('admin.roles.index') }}" class="nav-link
+                        {{ request()->is("roles") ? "active" : "" }}">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>List</p>
+                        </a>
+                      </li>
+                      @endcan
+                      @can('create role')
+                      <li class="nav-item">
+                        <a href="{{ route('admin.roles.create') }}" class="nav-link
+                        {{ request()->is("roles/create") || request()->is("roles/*") ? "active" : "" }}">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Create</p>
+                        </a>
+                      </li>
+                      @endcan
+                    </ul>
+                </li>
+                @endcan
+                @can('access permission')
+                <li class="nav-item
+                {{ request()->is("permissions") || request()->is("permissions/*") ? "menu-open" : "" }}">
+                    <a href="#" class="nav-link
+                    {{ request()->is("permissions") || request()->is("permissions/*") ? "active" : "" }}">
+                      <i class="nav-icon fas fa-user-lock"></i>
+
+                      <p>
+                        Permissions
+                        <i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                    @can('access permission')
+                      <li class="nav-item">
+                        <a href="{{ route('admin.permissions.index') }}" class="nav-link
+                        {{ request()->is("permissions") ? "active" : "" }}">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>List</p>
+                        </a>
+                      </li>
+                      @endcan
+                      @can('create permission')
+                      <li class="nav-item">
+                        <a href="{{ route('admin.permissions.create') }}" class="nav-link
+                        {{ request()->is("permissions/create") || request()->is("permissions/*") ? "active" : "" }}">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Create</p>
+                        </a>
+                      </li>
+                      @endcan
+                    </ul>
+                </li>
+                @endcan
 
              <li class="nav-item">
               <a href="{{ route('admin.logout') }}" class="nav-link">

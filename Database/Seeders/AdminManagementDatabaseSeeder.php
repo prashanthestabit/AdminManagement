@@ -26,6 +26,15 @@ class AdminManagementDatabaseSeeder extends Seeder
           Permission::create(['name' => 'delete user']);
           Permission::create(['name' => 'create user']);
           Permission::create(['name' => 'access user']);
+          Permission::create(['name' => 'access role']);
+          Permission::create(['name' => 'create role']);
+          Permission::create(['name' => 'edit role']);
+          Permission::create(['name' => 'delete role']);
+          Permission::create(['name' => 'access permission']);
+          Permission::create(['name' => 'create permission']);
+          Permission::create(['name' => 'edit permission']);
+          Permission::create(['name' => 'delete permission']);
+
 
           // create roles and assign created permissions
 

@@ -60,7 +60,7 @@
 
                             <div class="form-group">
                                 <label for="role">Role</label>
-                                <select class="form-control" name="roles[]" multiple required>
+                                <select class="form-control select2" name="roles[]" multiple required>
                                     @forelse ($roles as $role)
                                         <option value="{{ $role }}"
                                         {{ (old("roles") == $role ? "selected":"") }}>{{ $role }}</option>
@@ -68,6 +68,27 @@
                                     @endforelse
                                 </select>
                             </div>
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                  <h3 class="card-title">Permission</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="row ml-2">
+                                        @forelse ($permissions as $permission)
+                                            <div class="col-sm-3 col-md-3 form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                        name="permissions[]"  value="{{ $permission->id }}">
+                                            <label class="form-check-label">{{ Str::title($permission->name) }}</label>
+                                            </div>
+                                        @empty
+
+                                        @endforelse
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                              </div>
+
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
@@ -86,6 +107,9 @@
 @push('script')
     <script>
         $(function() {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
             $.validator.setDefaults({
                 submitHandler: function() {
                     form.submit();

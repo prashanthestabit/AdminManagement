@@ -1,7 +1,7 @@
 @extends('adminmanagement::layouts.app')
 
 @section('content')
-    <x-adminmanagement::page-header pageTitle="Edit User" :breadcrumbs="['Home', 'Edit User']" />
+    <x-adminmanagement::page-header pageTitle="Creare Role" :breadcrumbs="['Home', 'Creare Role']" />
 
     <!-- Main content -->
     <section class="content">
@@ -12,14 +12,13 @@
                     <!-- jquery validation -->
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Edit User<small></small></h3>
+                            <h3 class="card-title">Create Role<small></small></h3>
                         </div>
-                        {!! Form::model($user, ['method' => 'PATCH','route' => ['admin.users.update', $user->id]]) !!}
+                        {!! Form::open(['route' => 'admin.roles.store', 'method' => 'POST', 'id' => 'roleForm']) !!}
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input class="form-control" type="text" name="name"
-                                 value="{{ old('name',($user->name)?$user->name:'') }}"
+                                <input class="form-control" type="text" name="name" value="{{ old('name') }}"
                                     required>
                                 @if ($errors->has('name'))
                                     <div class="text-danger">
@@ -29,48 +28,25 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input class="form-control" type="text" name="email"
-                                value="{{ old('email',($user->email)?$user->email:'') }}" required>
-                                @if ($errors->has('email'))
-                                    <div class="text-danger">
-                                        {{ $errors->first('email') }}
-                                    </div>
-                                @endif
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="role">Role</label>
-                                <select class="form-control select2" name="roles[]" multiple required>
-                                    @forelse ($roles as $role)
-                                        <option value="{{ $role }}"
-                                        {{ ((in_array($role,$userRole)) ? "selected":"") }}>{{ $role }}</option>
+                                <label for="permissions">Permissions</label>
+                                <div class="select2-purple">
+                                <select class="select2" multiple="multiple" data-placeholder="Select a Permissions"
+                                data-dropdown-css-class="select2-purple" style="width: 100%;"
+                                name="permissions[]" required>
+                                    @forelse ($permissions as $permission)
+                                        <option value="{{ $permission->id }}"
+                                        {{ (old("permissions") == $permission->name ? "selected":"") }}>
+                                        {{ $permission->name }}
+                                        </option>
                                     @empty
                                     @endforelse
                                 </select>
-                            </div>
-                            <div class="card card-secondary">
-                                <div class="card-header">
-                                  <h3 class="card-title">Permission</h3>
                                 </div>
-                                <!-- /.card-header -->
-                                <div class="card-body">
-                                    <div class="row ml-2">
-                                        @forelse ($permissions as $permission)
-                                            <div class="col-sm-3 col-md-3 form-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                        name="permissions[]"  value="{{ $permission->id }}"
-                                                        @if(in_array($permission->name, $userPermission)) checked @endif
-                                                        >
-                                            <label class="form-check-label">{{ Str::title($permission->name) }}</label>
-                                            </div>
-                                        @empty
-
-                                        @endforelse
+                                @if ($errors->has('permissions'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('permissions') }}
                                     </div>
-                                </div>
-                                <!-- /.card-body -->
+                                @endif
                             </div>
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -104,11 +80,7 @@
                         required: true,
                         minlength: 2,
                     },
-                    email: {
-                        required: true,
-                        email: true,
-                    },
-                    roles: {
+                    permissions: {
                         required: true,
                     }
                 },
@@ -117,9 +89,8 @@
                         required: "Please enter a name",
                         minlength: "Your name must be at least 2 characters long"
                     },
-                    email: {
-                        required: "Please enter a email address",
-                        email: "Please enter a valid email address"
+                    permissions: {
+                        required: "Please select permission",
                     }
                 },
                 errorElement: 'span',

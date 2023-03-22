@@ -5,6 +5,9 @@ namespace Modules\AdminManagement\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
+/**
+ * php artisan vendor:publish --tag=public --provider="Modules\AdminManagement\Providers\AdminManagementServiceProvider"
+ */
 class AdminManagementServiceProvider extends ServiceProvider
 {
     /**
@@ -28,7 +31,7 @@ class AdminManagementServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
-        //$this->registerPublic();
+        $this->registerPublic();
     }
 
     /**
@@ -36,19 +39,11 @@ class AdminManagementServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerPublic()
+    protected function registerPublic()
     {
-       // dd(public_path('vendor').'/'.$this->moduleNameLower);
-        // $this->publishes([
-        //     module_path($this->moduleName, 'public') => public_path($this->moduleNameLower),
-        // ], 'public');
-
-        $this->loadViewsFrom(__DIR__.'/../resources/views', $this->moduleNameLower);
-
         $this->publishes([
-            __DIR__.'/../public' => public_path('vendor').'/'.$this->moduleNameLower,
+            module_path($this->moduleName, 'public') => public_path(),
         ], 'public');
-
     }
 
     /**

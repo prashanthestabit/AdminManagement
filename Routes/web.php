@@ -16,6 +16,8 @@ use Modules\AdminManagement\Http\Controllers\AdminManagementController;
 use Modules\AdminManagement\Http\Controllers\Auth\AuthController;
 use Modules\AdminManagement\Http\Controllers\Auth\ChangePasswordController;
 use Modules\AdminManagement\Http\Controllers\Auth\ResetPasswordController;
+use Modules\AdminManagement\Http\Controllers\PermissionController;
+use Modules\AdminManagement\Http\Controllers\RoleController;
 use Modules\AdminManagement\Http\Controllers\UserController;
 
 Route::prefix('adminmanagement')->group(function() {
@@ -37,6 +39,10 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::resource('users', UserController::class);
+
+    Route::resource('roles', RoleController::class);
+
+    Route::resource('permissions', PermissionController::class);
 });
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => ['auth']], function () {

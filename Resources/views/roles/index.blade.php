@@ -2,7 +2,7 @@
 
 @section('content')
 
-<x-adminmanagement::page-header pageTitle="User Management" :breadcrumbs="['Home', 'User Management']" />
+<x-adminmanagement::page-header pageTitle="Role Management" :breadcrumbs="['Home', 'Role Management']" />
 
     <!-- Main content -->
     <section class="content">
@@ -11,10 +11,10 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Users</h3>
-                  @can('create user')
+                  <h3 class="card-title">Roles</h3>
+                  @can('create role')
                   <div class="text-right">
-                        <a class="btn btn-success btn-sm" href="{{ route('admin.users.create') }}"> Create New User </a>
+                        <a class="btn btn-success btn-sm" href="{{ route('admin.roles.create') }}"> Create New Role </a>
                   </div>
                   @endcan
                 </div>
@@ -24,43 +24,34 @@
                     <thead>
                       <tr>
                         <th style="width: 10px">#</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Roles</th>
+                        <th>Role</th>
+                        <th>Permissions</th>
                         <th style="width: 280px">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data as $key => $user)
+                        @foreach ($data as $key => $role)
                         <tr>
                           <td>{{ ++$i }}</td>
-                          <td>{{ $user->name }}</td>
-                          <td>{{ $user->email }}</td>
+                          <td>{{ $role->name }}</td>
                           <td>
-                            @if(!empty($user->getRoleNames()))
-                              @foreach($user->getRoleNames() as $v)
-                                 <label class="badge badge-success">{{ $v }}</label>
-                              @endforeach
+                            @if(!empty($role->permissions))
+                            @foreach($role->permissions as $key => $item)
+                                <span class="badge badge-info">{{ $item->name }}</span>
+                            @endforeach
                             @endif
                           </td>
                           <td>
-                            @can('access user')
-                             <a class="btn btn-primary btn-sm" href="{{ route('admin.users.show',$user->id) }}">
-                                <i class="fas fa-folder">
-                                </i>
-                                Show
-                            </a>
-                            @endcan
-                             @can('edit user')
-                             <a class="btn btn-info btn-sm" href="{{ route('admin.users.edit',$user->id) }}">
+                             @can('edit role')
+                             <a class="btn btn-info btn-sm" href="{{ route('admin.roles.edit',$role->id) }}">
                                 <i class="fas fa-pencil-alt">
                                 </i>
                                 Edit
                             </a>
                               @endcan
-                              @can('delete user')
+                              @can('delete role')
                               {!! Form::open(['method' => 'DELETE',
-                              'route' => ['admin.users.destroy', $user->id],'style'=>'display:inline']) !!}
+                              'route' => ['admin.roles.destroy', $role->id],'style'=>'display:inline']) !!}
                               <input type="hidden" name="page" value="{{ $data->currentPage() }}">
 
                               {{ Form::button('<i class="fas fa-trash""></i> Delete',

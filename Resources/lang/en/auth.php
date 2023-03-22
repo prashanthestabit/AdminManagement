@@ -4,6 +4,7 @@ return [
     'failed'   => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'error'    => 'An error occurred:',
+    'dashboard' => 'Dashboard',
     'logout'   => 'Logout',
     'reset_password'      => 'Reset Password',
     'mailed_message' => 'We have e-mailed your password reset link!',
@@ -16,5 +17,16 @@ return [
         'created' => 'User created successfully',
         'updated' => 'User updated successfully',
         'deleted' => 'User deleted successfully'
+    ],
+    'role' => [
+        'created' => 'Role created successfully',
+        'updated' => 'Role updated successfully',
+        'deleted' => 'Role deleted successfully'
+    ],
+    'permission' => [
+        'created' => 'Permission created successfully',
+        'updated' => 'Permission updated successfully',
+        'deleted' => 'Permission deleted successfully'
     ]
+
 ];

@@ -10,20 +10,22 @@ use Spatie\Permission\Models\Role;
 use Exception;
 use Gate;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Hash;
 use Modules\AdminManagement\Http\Requests\StoreUserRequest;
 use Modules\AdminManagement\Http\Requests\UpdateUserRequest;
 use Modules\AdminManagement\Repositories\AuthRepository;
+use Modules\AdminManagement\Repositories\PermissionRepository;
+use Modules\AdminManagement\Repositories\RoleRepository;
 
 class UserController extends Controller
 {
     const FORBIDDEN = '403 Forbidden';
 
     const PERPAGE = 5;
+
+    const ERROR = 'adminmanagement::auth.error';
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -35,10 +37,10 @@ class UserController extends Controller
         try {
             $data = User::orderBy('id', 'DESC')->paginate(self::PERPAGE);
             return view('adminmanagement::users.index', compact('data'))
-                ->with('i', ($request->input('page', 1) - 1) * 5);
+                ->with('i', ($request->input('page', 1) - 1) * self::PERPAGE);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
         }
     }
 
@@ -51,11 +53,14 @@ class UserController extends Controller
         abort_if(Gate::denies('create user'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-            $roles = Role::pluck('name')->all();
-            return view('adminmanagement::users.create', compact('roles'));
+            $roles = (new RoleRepository)->all()->pluck('name');
+
+            $permissions = (new PermissionRepository)->all();
+
+            return view('adminmanagement::users.create', compact('roles', 'permissions'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
         }
 
     }
@@ -70,15 +75,18 @@ class UserController extends Controller
         abort_if(Gate::denies('create user'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-            $user = (new AuthRepository())->create($request->all());
+                $user = (new AuthRepository())->create($request->all());
 
-            $user->assignRole($request->input('roles'));
+                $user->assignRole($request->input('roles'));
+
+                // Adding permissions to a user
+                $user->givePermissionTo($request->input('permissions'));
 
             return redirect()->route('admin.users.index')
                             ->with('success', __('adminmanagement::auth.user.created'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
 
         }
     }
@@ -97,7 +105,7 @@ class UserController extends Controller
             return view('adminmanagement::users.show', compact('user', 'userRole'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
 
         }
 
@@ -117,14 +125,20 @@ class UserController extends Controller
         try {
         $user = (new AuthRepository())->find($id);
 
-        $roles = Role::pluck('name')->all();
+        $roles = (new RoleRepository)->all()->pluck('name');
+
+        $permissions = (new PermissionRepository)->all();
+
         $userRole = $user->roles->pluck('name')->all();
 
-        return view('adminmanagement::users.edit', compact('user', 'roles', 'userRole'));
+        $userPermission = $user->permissions->pluck('name')->all();
+
+        return view('adminmanagement::users.edit',
+            compact('user', 'roles', 'userRole', 'permissions', 'userPermission'));
 
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
         }
     }
 
@@ -149,12 +163,17 @@ class UserController extends Controller
 
             $user->assignRole($request->input('roles'));
 
+            if ($request->input('permissions')) {
+                $user->givePermissionTo($request->input('permissions'));
+            }
+
+
             return redirect()->route('admin.users.index')
                         ->with('success', __('adminmanagement::auth.user.updated'));
 
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
         }
     }
 
@@ -181,7 +200,7 @@ class UserController extends Controller
                             ->with('success', __('adminmanagement::auth.user.deleted'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
         }
     }
 }

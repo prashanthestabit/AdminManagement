@@ -4,7 +4,7 @@ namespace Modules\AdminManagement\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class UpdateRoleRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,9 +14,8 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:users,name,'.$this->user,
-            'email' => 'required|email',
-            'roles' => 'required'
+            'name' => 'required|unique:roles,name,'.$this->role,
+            'permissions' => 'required',
         ];
     }
 
