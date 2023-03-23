@@ -2,19 +2,16 @@
 
 namespace Modules\AdminManagement\Http\Controllers\Auth;
 
-use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Modules\AdminManagement\Http\Requests\ForgetPasswordRequest;
 use Modules\AdminManagement\Http\Requests\PostLoginRequest;
 use Modules\AdminManagement\Http\Requests\PostRegistrationRequest;
-use Illuminate\Support\Str;
 use Modules\AdminManagement\Repositories\AuthRepository;
 use Session;
 
@@ -22,6 +19,7 @@ class AuthController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
      * @return Renderable
      */
     public function index()
@@ -29,6 +27,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect()->route('admin.dashboard');
         }
+
         return view('adminmanagement::auth.login');
     }
 
@@ -42,15 +41,15 @@ class AuthController extends Controller
         return view('adminmanagement::auth.registration');
     }
 
-     /**
-     * Forgot password form
-     * @return response()
-     */
+      /**
+       * Forgot password form
+       *
+       * @return response()
+       */
       public function showForgetPasswordForm()
       {
-         return view('adminmanagement::auth.forgetPassword');
+          return view('adminmanagement::auth.forgetPassword');
       }
-
 
       /**
        * Write code on Method
@@ -59,17 +58,23 @@ class AuthController extends Controller
        */
       public function submitForgetPasswordForm(ForgetPasswordRequest $request)
       {
-          $token = Str::random(64);
+          try {
+              $token = Str::random(64);
 
-          $auth = new AuthRepository();
+              $auth = new AuthRepository();
 
-          $rs = $auth->savePasswordReset($request->email, $token);
+              $rs = $auth->savePasswordReset($request->email, $token);
 
-         if ($rs) {
-          /// $auth->sendMail($token, $request, __('adminmanagement::auth.reset_password'));
-         }
+              if ($rs) {
+                  $auth->sendMail($token, $request, __('adminmanagement::auth.reset_password'));
+              }
 
-          return back()->with('message', __('adminmanagement::auth.mailed_message'));
+              return redirect()->route('login')->with('message', __('adminmanagement::auth.mailed_message'));
+          } catch (Exception $e) {
+              Log::error($e->getMessage());
+
+              return Redirect::back()->with('error', __('adminmanagement::auth.error').$e->getMessage());
+          }
       }
 
     /**
@@ -79,18 +84,19 @@ class AuthController extends Controller
      */
     public function postLogin(PostLoginRequest $request)
     {
-       try {
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')
-                        ->withSuccess('You have Successfully loggedin');
-        }
+        try {
+            $credentials = $request->only('email', 'password');
+            if (Auth::attempt($credentials)) {
+                return redirect()->intended('dashboard')
+                            ->withSuccess(__('adminmanagement::auth.login_success'));
+            }
 
-        return redirect()->route('admin.dashboard');
-     } catch (Exception $e) {
-        Log::error($e->getMessage());
-        return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
-     }
+            return redirect()->route('login')->with('error', __('adminmanagement::auth.login_failed'));
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+
+            return Redirect::back()->with('error', __('adminmanagement::auth.error').$e->getMessage());
+        }
     }
 
     /**
@@ -112,11 +118,10 @@ class AuthController extends Controller
             }
 
             return Redirect::back();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
 
-        } catch (Exception $e)
-        {
-          Log::error($e->getMessage());
-          return Redirect::back()->with('error', __('adminmanagement::auth.error') . $e->getMessage());
+            return Redirect::back()->with('error', __('adminmanagement::auth.error').$e->getMessage());
         }
     }
 
@@ -125,7 +130,8 @@ class AuthController extends Controller
      *
      * @return response()
      */
-    public function logout() {
+    public function logout()
+    {
         Session::flush();
         Auth::logout();
 

@@ -21,7 +21,7 @@ use Modules\AdminManagement\Http\Controllers\PermissionController;
 use Modules\AdminManagement\Http\Controllers\RoleController;
 use Modules\AdminManagement\Http\Controllers\UserController;
 
-Route::prefix('adminmanagement')->group(function() {
+Route::prefix('adminmanagement')->group(function () {
     Route::get('login', [AuthController::class, 'index'])->name('login');
     Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
     Route::get('registration', [AuthController::class, 'registration'])->name('register');
@@ -36,10 +36,9 @@ Route::prefix('adminmanagement')->group(function() {
 });
 
 Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
+    Route::get('dashboard', [AdminManagementController::class, 'index'])->name('dashboard');
 
-    Route::get('dashboard', [AdminManagementController::class ,'index'])->name('dashboard');
-
-    Route::get('home', [AdminManagementController::class ,'index'])->name('home');
+    Route::get('home', [AdminManagementController::class, 'index'])->name('home');
 
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -51,10 +50,9 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
 });
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => ['auth']], function () {
-// Change password
-        Route::get('show', [ProfileController::class,'index'])->name('show');
-        Route::post('update', [ProfileController::class,'update'])->name('update');
-        Route::get('password', [ChangePasswordController::class,'index'])->name('password.edit');
-        Route::post('password/update', [ChangePasswordController::class,'updatePassword'])->name('password.update');
+    // Change password
+    Route::get('show', [ProfileController::class, 'index'])->name('show');
+    Route::post('update', [ProfileController::class, 'update'])->name('update');
+    Route::get('password', [ChangePasswordController::class, 'index'])->name('password.edit');
+    Route::post('password/update', [ChangePasswordController::class, 'updatePassword'])->name('password.update');
 });
-

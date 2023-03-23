@@ -18,10 +18,10 @@ class ChangePasswordRequest extends FormRequest
             'password' => ['required', 'string', 'min:8', 'confirmed',
                 function ($attribute, $value, $fail) {
                     $pass = $attribute;
-                if ($value === $this->old_password) {
-                    $fail(__('adminmanagement::auth.new_and_old_password_same'));
-                }
-            }],
+                    if ($value === $this->old_password) {
+                        $fail(__('adminmanagement::auth.new_and_old_password_same'));
+                    }
+                }],
         ];
     }
 

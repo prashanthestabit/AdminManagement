@@ -2,17 +2,17 @@
 
 namespace Modules\AdminManagement\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Exception;
 use Gate;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Modules\AdminManagement\Http\Requests\StoreUserRequest;
 use Modules\AdminManagement\Http\Requests\UpdateUserRequest;
 use Modules\AdminManagement\Repositories\AuthRepository;
@@ -26,8 +26,10 @@ class UserController extends Controller
     const PERPAGE = 5;
 
     const ERROR = 'adminmanagement::auth.error';
+
     /**
      * Display a listing of the resource.
+     *
      * @return Renderable
      */
     public function index(Request $request)
@@ -36,16 +38,19 @@ class UserController extends Controller
 
         try {
             $data = User::orderBy('id', 'DESC')->paginate(self::PERPAGE);
+
             return view('adminmanagement::users.index', compact('data'))
                 ->with('i', ($request->input('page', 1) - 1) * self::PERPAGE);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
+
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
 
     /**
      * Show the form for creating a new resource.
+     *
      * @return Renderable
      */
     public function create()
@@ -60,14 +65,15 @@ class UserController extends Controller
             return view('adminmanagement::users.create', compact('roles', 'permissions'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
-        }
 
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
+        }
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param Request $request
+     *
+     * @param  Request  $request
      * @return Renderable
      */
     public function store(StoreUserRequest $request)
@@ -75,25 +81,26 @@ class UserController extends Controller
         abort_if(Gate::denies('create user'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-                $user = (new AuthRepository())->create($request->all());
+            $user = (new AuthRepository())->create($request->all());
 
-                $user->assignRole($request->input('roles'));
+            $user->assignRole($request->input('roles'));
 
-                // Adding permissions to a user
-                $user->givePermissionTo($request->input('permissions'));
+            // Adding permissions to a user
+            $user->givePermissionTo($request->input('permissions'));
 
             return redirect()->route('admin.users.index')
                             ->with('success', __('adminmanagement::auth.user.created'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
 
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
 
     /**
      * Show the specified resource.
-     * @param int $id
+     *
+     * @param  int  $id
      * @return Renderable
      */
     public function show($id)
@@ -105,15 +112,14 @@ class UserController extends Controller
             $userPermission = $user->permissions->pluck('name')->map(function ($name) {
                 return Str::title($name);
             })->all();
+
             return view('adminmanagement::users.show', compact('user', 'userRole', 'userPermission'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
 
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
-
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -126,29 +132,30 @@ class UserController extends Controller
         abort_if(Gate::denies('edit user'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-        $user = (new AuthRepository())->find($id);
+            $user = (new AuthRepository())->find($id);
 
-        $roles = (new RoleRepository)->all()->pluck('name');
+            $roles = (new RoleRepository)->all()->pluck('name');
 
-        $permissions = (new PermissionRepository)->all();
+            $permissions = (new PermissionRepository)->all();
 
-        $userRole = $user->roles->pluck('name')->all();
+            $userRole = $user->roles->pluck('name')->all();
 
-        $userPermission = $user->permissions->pluck('name')->all();
+            $userPermission = $user->permissions->pluck('name')->all();
 
-        return view('adminmanagement::users.edit',
-            compact('user', 'roles', 'userRole', 'permissions', 'userPermission'));
-
+            return view('adminmanagement::users.edit',
+                compact('user', 'roles', 'userRole', 'permissions', 'userPermission'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
+
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
 
     /**
      * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
+     *
+     * @param  Request  $request
+     * @param  int  $id
      * @return Renderable
      */
     public function update(UpdateUserRequest $request, $id)
@@ -158,7 +165,7 @@ class UserController extends Controller
         try {
             $auth = (new AuthRepository());
 
-            $auth->update(['id'=>$id], $request->only('name', 'email'));
+            $auth->update(['id' => $id], $request->only('name', 'email'));
 
             $user = $auth->find($id);
 
@@ -170,19 +177,19 @@ class UserController extends Controller
                 $user->givePermissionTo($request->input('permissions'));
             }
 
-
             return redirect()->route('admin.users.index')
                         ->with('success', __('adminmanagement::auth.user.updated'));
-
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
+
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
 
     /**
      * Remove the specified resource from storage.
-     * @param int $id
+     *
+     * @param  int  $id
      * @return Renderable
      */
     public function destroy(Request $request, $id)
@@ -190,20 +197,21 @@ class UserController extends Controller
         abort_if(Gate::denies('delete user'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-             (new AuthRepository())->delete($id);
+            (new AuthRepository())->delete($id);
 
-             $paginator = User::paginate(self::PERPAGE);
+            $paginator = User::paginate(self::PERPAGE);
 
-             //Get page for redirect on same page after delete
-             $redirectToPage = ($request->input('page') <= $paginator->lastPage())
-                ? $request->input('page')
-                :$paginator->lastPage();
+            //Get page for redirect on same page after delete
+            $redirectToPage = ($request->input('page') <= $paginator->lastPage())
+               ? $request->input('page')
+               : $paginator->lastPage();
 
-            return redirect()->route('admin.users.index', ['page'=> $redirectToPage])
+            return redirect()->route('admin.users.index', ['page' => $redirectToPage])
                             ->with('success', __('adminmanagement::auth.user.deleted'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return Redirect::back()->with('error', __(self::ERROR) . $e->getMessage());
+
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
 }

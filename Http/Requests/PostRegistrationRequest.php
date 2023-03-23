@@ -17,7 +17,7 @@ class PostRegistrationRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:6',
-            'terms'  =>'accepted'
+            'terms' => 'accepted',
         ];
     }
 
