@@ -14,6 +14,22 @@ use Modules\AdminManagement\Interface\AuthInterface;
 class AuthRepository implements AuthInterface
 {
     /**
+     * Get All User pagination
+     *
+     * @param  int  $perPage
+     * @return \App\Models\User
+     */
+    public function paginate($perPage, $request)
+    {
+        return User::orderBy('id', 'DESC')
+            ->when($request->has('table_search'), function ($query) use ($request) {
+                return $query->where('name', 'like', '%'.$request->input('table_search').'%')
+                            ->orWhere('email', 'like', '%'.$request->input('table_search').'%');
+            })
+            ->paginate($perPage);
+    }
+
+    /**
      * Write code on Method
      *
      * @return response()
@@ -82,7 +98,8 @@ class AuthRepository implements AuthInterface
 
     public function sendMail($token, $request, $subject)
     {
-        Mail::send('adminmanagement::email.forgetPassword', ['token' => $token], function ($m) use ($request, $subject) {
+        Mail::send('adminmanagement::email.forgetPassword', ['token' => $token], function ($m)
+        use ($request, $subject) {
             $m->to($request->email);
             $m->subject($subject);
         });

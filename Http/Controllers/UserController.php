@@ -37,7 +37,7 @@ class UserController extends Controller
         abort_if(Gate::denies('access user'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-            $data = User::orderBy('id', 'DESC')->paginate(self::PERPAGE);
+            $data = (new AuthRepository())->paginate(self::PERPAGE, $request);
 
             return view('adminmanagement::users.index', compact('data'))
                 ->with('i', ($request->input('page', 1) - 1) * self::PERPAGE);
@@ -71,7 +71,7 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in database.
      *
      * @param  Request  $request
      * @return Renderable
@@ -96,6 +96,7 @@ class UserController extends Controller
             return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
+
 
     /**
      * Show the specified resource.
@@ -143,7 +144,7 @@ class UserController extends Controller
             $userPermission = $user->permissions->pluck('name')->all();
 
             return view('adminmanagement::users.edit',
-                compact('user', 'roles', 'userRole', 'permissions', 'userPermission'));
+            compact('user', 'roles', 'userRole', 'permissions', 'userPermission'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
 

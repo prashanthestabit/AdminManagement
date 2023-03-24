@@ -40,7 +40,7 @@ class RoleController extends Controller
         abort_if(Gate::denies('access role'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-            $data = $this->role->paginate(self::PERPAGE);
+            $data = $this->role->paginate(self::PERPAGE,$request);
 
             return view('adminmanagement::roles.index', compact('data'))
                 ->with('i', ($request->input('page', 1) - 1) * self::PERPAGE);
@@ -154,7 +154,7 @@ class RoleController extends Controller
         try {
             $this->role->delete($id);
 
-            $paginator = $this->role->paginate(self::PERPAGE);
+            $paginator = $this->role->paginate(self::PERPAGE, $request);
 
             //Get page for redirect on same page after delete
             $redirectToPage = ($request->input('page') <= $paginator->lastPage())

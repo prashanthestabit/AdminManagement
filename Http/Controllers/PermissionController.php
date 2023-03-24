@@ -39,7 +39,7 @@ class PermissionController extends Controller
         abort_if(Gate::denies('access permission'), Response::HTTP_FORBIDDEN, self::FORBIDDEN);
 
         try {
-            $data = $this->permission->paginate(self::PERPAGE);
+            $data = $this->permission->paginate(self::PERPAGE, $request);
 
             return view('adminmanagement::permissions.index', compact('data'))
                 ->with('i', ($request->input('page', 1) - 1) * self::PERPAGE);
@@ -147,7 +147,7 @@ class PermissionController extends Controller
         try {
             $this->permission->delete($id);
 
-            $paginator = $this->permission->paginate(self::PERPAGE);
+            $paginator = $this->permission->paginate(self::PERPAGE, $request);
 
             //Get page for redirect on same page after delete
             $redirectToPage = ($request->input('page') <= $paginator->lastPage())

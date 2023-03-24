@@ -10,6 +10,25 @@
 
   <!-- /.control-sidebar -->
 </div>
+<script>
+    $(document).ready(function()
+    {
+      // Example to toggle dropdown list of the search bar
+      $('[data-widget="sidebar-search"]').SidebarSearch('toggle');
+
+      // Example to initialize the plugin with options
+        let options = {
+        arrowSign: '/',
+        minLength: 2,
+        highlightClass: 'text-yellow',
+        notFoundText: 'No results'
+        ...
+      };
+
+      ("[data-widget="sidebar-search"]").SidebarSearch(options);
+    });
+
+  </script>
 
 <!-- jQuery -->
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>

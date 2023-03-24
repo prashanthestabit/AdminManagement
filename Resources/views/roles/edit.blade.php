@@ -30,10 +30,16 @@
 
                             <div class="form-group">
                                 <label for="permissions">Permissions</label>
+                                <div style="padding-bottom: 4px">
+                                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">
+                                        {{ trans('adminmanagement::auth.select_all') }}</span>
+                                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">
+                                        {{ trans('adminmanagement::auth.deselect_all') }}</span>
+                                </div>
                                 <div class="select2-purple">
                                 <select class="select2" multiple="multiple" data-placeholder="Select a Permissions"
                                 data-dropdown-css-class="select2-purple" style="width: 100%;"
-                                name="permissions[]" required>
+                                name="permissions[]" id="permissions" required>
                                     @forelse ($permissions as $permission)
                                         <option value="{{ $permission->id }}"
                                             {{ ((in_array($permission->id, $rolePermissions)) ? "selected":"") }}>
@@ -67,6 +73,17 @@
 @push('script')
     <script>
         $(function() {
+
+            $(document).on('click','.select-all',function(){
+                $("#permissions > option").prop("selected", true);
+                $("#permissions").trigger("change");
+            });
+
+            $(document).on('click','.deselect-all',function(){
+                $("#permissions > option").prop("selected", false);
+                $("#permissions").trigger("change");
+            });
+
             //Initialize Select2 Elements
             $('.select2').select2()
 

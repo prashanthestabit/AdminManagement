@@ -8,7 +8,7 @@ interface RoleInterface
 
     public function all();
 
-    public function paginate($perPage);
+    public function paginate($perPage, $request);
 
     public function create($request);
 

@@ -15,6 +15,8 @@ return [
     'password_incorrect' => 'The old password is incorrect.',
     'password_changed' => 'Password changed successfully.',
     'new_and_old_password_same' => 'The new password cannot be the same as the old password.',
+    'select_all' => 'Select All',
+    'deselect_all' => 'Deselect All',
     'user' => [
         'created' => 'User created successfully',
         'updated' => 'User updated successfully',

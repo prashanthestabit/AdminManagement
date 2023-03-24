@@ -4,6 +4,8 @@ namespace Modules\AdminManagement\Interface;
 
 interface AuthInterface
 {
+    public function paginate($perPage, $request);
+
     public function create(array $data);
 
     public function update($where, $data);

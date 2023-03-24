@@ -4,7 +4,7 @@ namespace Modules\AdminManagement\Interface;
 
 interface PermissionInterface
 {
-    public function paginate($perPage);
+    public function paginate($perPage, $request);
 
     public function all();
 

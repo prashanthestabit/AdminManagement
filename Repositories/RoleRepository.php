@@ -32,9 +32,13 @@ class RoleRepository implements RoleInterface
      * @param  int  $perPage
      * @return \Spatie\Permission\Models\Role
      */
-    public function paginate($perPage)
+    public function paginate($perPage, $request)
     {
-        return Role::with('permissions')->orderBy('id', 'DESC')->paginate($perPage);
+        return Role::with('permissions')->orderBy('id', 'DESC')
+            ->when($request->has('table_search'), function ($query) use ($request) {
+                return $query->where('name', 'like', '%'.$request->input('table_search').'%');
+            })
+            ->paginate($perPage);
     }
 
     /**

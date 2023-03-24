@@ -18,6 +18,10 @@
                   </div>
                   @endcan
                 </div>
+
+                <x-adminmanagement::global-search :href="route('admin.users.index')"
+                 :value="request()->input('table_search')"/>
+
                 <!-- /.card-header -->
                 <div class="card-body">
                   <table class="table table-bordered">
