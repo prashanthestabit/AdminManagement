@@ -34,7 +34,7 @@ class AuthControllerTest extends TestCase
 
         $response->assertRedirect(route('admin.dashboard'));
 
-        $response->assertSessionHas('success', __('auth.login_success'));
+        $response->assertSessionHas('success', __('adminmanagement::auth.login_success'));
     }
 
     /**

@@ -17,6 +17,7 @@ use Session;
 
 class AuthController extends Controller
 {
+    const ERROR = 'adminmanagement::auth.error';
     /**
      * Display a listing of the resource.
      *
@@ -73,7 +74,7 @@ class AuthController extends Controller
           } catch (Exception $e) {
               Log::error($e->getMessage());
 
-              return Redirect::back()->with('error', __('adminmanagement::auth.error').$e->getMessage());
+              return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
           }
       }
 
@@ -95,7 +96,7 @@ class AuthController extends Controller
         } catch (Exception $e) {
             Log::error($e->getMessage());
 
-            return Redirect::back()->with('error', __('adminmanagement::auth.error').$e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
 
@@ -121,7 +122,7 @@ class AuthController extends Controller
         } catch (Exception $e) {
             Log::error($e->getMessage());
 
-            return Redirect::back()->with('error', __('adminmanagement::auth.error').$e->getMessage());
+            return Redirect::back()->with('error', __(self::ERROR).$e->getMessage());
         }
     }
 

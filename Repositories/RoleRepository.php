@@ -46,7 +46,7 @@ class RoleRepository implements RoleInterface
     public function create($request)
     {
         $role = Role::create(['name' => $request->name]);
-        $permissions = $request->input('permissions', []);
+        $permissions = $request->permissions;
 
         $role->syncPermissions($permissions);
 
