@@ -19,6 +19,7 @@ The module includes the following features:
 5. [Nwidart Laravel Module](https://nwidart.com/laravel-modules/v6/introduction)
 
 ### Installation
+
 1. Install Laravel on your system.
 2. [Install Spatie Laravel Permission and set it up according to the documentation.](#1-spiteLaravel)
 3. Install Nwidart laravel and setup according to the documentation.
