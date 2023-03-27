@@ -125,4 +125,8 @@ protected $middlewareAliases = [
 
 ### NOTE:- For testing the api you can run the following command
 
+```bash
+php artisan test Modules/AdminManagement
+```
+
 
