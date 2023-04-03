@@ -5,6 +5,7 @@ namespace Modules\AdminManagement\Tests\Unit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Modules\AdminManagement\Repositories\PermissionRepository;
@@ -18,7 +19,8 @@ class PermissionControllerTest extends TestCase
         'DELETE' => 'delete permission',
         'TEST'  => 'test permission'
     ];
-    use  WithFaker, DatabaseTransactions;
+
+    use  WithFaker, DatabaseTransactions, WithoutMiddleware;
 
     /**
      * Test Permission List Page With Valid Permission
@@ -27,7 +29,11 @@ class PermissionControllerTest extends TestCase
     {
         $this->createUserWithPermission('access permission', true);
 
-        $response = $this->get(route('admin.permissions.index'));
+        $this->createPermission('create_permission');
+
+        $response = $this->get(route('admin.permissions.index', ['page'=>1]), [
+            'page' => 1
+        ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewIs('adminmanagement::permissions.index');

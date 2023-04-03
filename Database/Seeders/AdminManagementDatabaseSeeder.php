@@ -2,6 +2,7 @@
 
 namespace Modules\AdminManagement\Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -22,27 +23,29 @@ class AdminManagementDatabaseSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // create permissions
-        Permission::create(['name' => 'edit user']);
-        Permission::create(['name' => 'delete user']);
-        Permission::create(['name' => 'create user']);
-        Permission::create(['name' => 'access user']);
-        Permission::create(['name' => 'access role']);
-        Permission::create(['name' => 'create role']);
-        Permission::create(['name' => 'edit role']);
-        Permission::create(['name' => 'delete role']);
-        Permission::create(['name' => 'access permission']);
-        Permission::create(['name' => 'create permission']);
-        Permission::create(['name' => 'edit permission']);
-        Permission::create(['name' => 'delete permission']);
+        Permission::updateOrCreate(['name' => 'edit user'], ['name' => 'edit user']);
+        Permission::updateOrCreate(['name' => 'delete user'], ['name' => 'delete user']);
+        Permission::updateOrCreate(['name' => 'create user'], ['name' => 'create user']);
+        Permission::updateOrCreate(['name' => 'access user'], ['name' => 'access user']);
+        Permission::updateOrCreate(['name' => 'access role'], ['name' => 'access role']);
+        Permission::updateOrCreate(['name' => 'create role'],['name' => 'create role']);
+        Permission::updateOrCreate(['name' => 'edit role'],['name' => 'edit role']);
+        Permission::updateOrCreate(['name' => 'delete role'], ['name' => 'delete role']);
+        Permission::updateOrCreate(['name' => 'access permission'], ['name' => 'access permission']);
+        Permission::updateOrCreate(['name' => 'create permission'], ['name' => 'create permission']);
+        Permission::updateOrCreate(['name' => 'edit permission'], ['name' => 'edit permission']);
+        Permission::updateOrCreate(['name' => 'delete permission'], ['name' => 'delete permission']);
 
         // create roles and assign created permissions
 
-        // this can be done as separate statements
-        $role = Role::create(['name' => 'student']);
+        //this can be done as separate statements
+        $role = Role::updateOrCreate(['name' => 'student'], ['name' => 'student']);
 
         $role->givePermissionTo('access user');
 
-        $role = Role::create(['name' => 'admin']);
+        $role = Role::updateOrCreate(['name' => 'admin'], ['name' => 'admin']);
         $role->givePermissionTo(Permission::all());
+
+        Role::findByName('admin')->users()->sync(User::pluck('id'));
     }
 }

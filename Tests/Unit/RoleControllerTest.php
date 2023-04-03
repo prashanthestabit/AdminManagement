@@ -5,6 +5,7 @@ namespace Modules\AdminManagement\Tests\Unit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Modules\AdminManagement\Repositories\PermissionRepository;
@@ -17,7 +18,7 @@ use Tests\TestCase;
 
 class RoleControllerTest extends TestCase
 {
-    use  WithFaker, DatabaseTransactions;
+    use  WithFaker, DatabaseTransactions, WithoutMiddleware;
 
     const ROLE = [
         'ACCESS' => 'access role',

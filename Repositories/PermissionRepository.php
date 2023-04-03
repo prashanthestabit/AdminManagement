@@ -67,7 +67,7 @@ class PermissionRepository implements PermissionInterface
      */
     public function create($request)
     {
-        return Permission::create(['name' => $request->name]);
+        return Permission::updateOrCreate(['name' => $request->name], ['name' => $request->name]);
     }
 
     /**

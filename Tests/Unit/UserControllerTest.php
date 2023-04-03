@@ -9,6 +9,7 @@ use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
 use Mockery;
 use Spatie\Permission\Models\Permission;
@@ -16,7 +17,7 @@ use Spatie\Permission\Models\Role;
 
 class UserControllerTest extends TestCase
 {
-    use  WithFaker, DatabaseTransactions;
+    use  WithFaker, DatabaseTransactions, WithoutMiddleware;
 
     const USER = [
         'ACCESS' => 'access user',

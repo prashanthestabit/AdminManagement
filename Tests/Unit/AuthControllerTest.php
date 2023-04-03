@@ -5,6 +5,7 @@ namespace Modules\AdminManagement\Tests\Unit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -14,7 +15,7 @@ use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
-    use  WithFaker, DatabaseTransactions;
+    use  WithFaker, DatabaseTransactions, WithoutMiddleware;
 
     /**
      * Test the postLogin method with valid credentials.
